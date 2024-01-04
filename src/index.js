@@ -1,13 +1,13 @@
-// import 'dotenv/config'
-// import { app } from './app.js';
-// import connectDB from "./db/index.js";
+import {app} from "./app.js";
+import Razorpay from "razorpay";
 
-// connectDB()
-// .then(() => {
-//   app.listen(process.env.PORT || 8000 , () => {
-//     console.log(`Server is running at port ${process.env.PORT}`)
-//   })
-// })
-// .catch((err) => {
-//   console.log("MongoDB Conntection has failed due to ", err);
-// })
+
+export const instance = new Razorpay({
+  key_id: process.env.RAZORPAY_API_KEY,
+  key_secret: process.env.RAZORPAY_API_SECRET
+});
+
+
+app.listen(process.env.PORT,()=>
+  console.log(`Server is working on ${process.env.PORT}`)
+);
