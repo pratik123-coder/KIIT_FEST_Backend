@@ -33,7 +33,7 @@ export const paymentVerification = async (req, res) => {
     console.log(`Order ID: ${razorpay_order_id}`);
     console.log(`Signature: ${razorpay_signature}`);
 
-    res.redirect(`${process.env.CORS_ORIGIN}/paymentsuccess?reference=${razorpay_payment_id}`);
+    res.redirect(`localhost:${PORT}/paymentsuccess?reference=${razorpay_payment_id}`);
   }
   else{
     res.status(400).json({
