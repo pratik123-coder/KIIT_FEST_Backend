@@ -7,46 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-    id Int @id @default(autoincrement()) @relation(Events)
-    name String 
-    email String @unique
-    password String
-    phoneNumber Int 
-    DateOfBirth DateTime
-    city String
-    state String
-    gender String
-    college String
-    events String?
-    total_events String?
-    accomodation Boolean
-    payment Boolean
-    createdAt DateTime @default(now())
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  phoneNumber   String
+  DateOfBirth   DateTime
+  city          String
+  state         String
+  gender        String
+  college       String
+  events        Event[]   @relation("participants")
+  accomodation  Boolean
+  total_events  Event[]   @relation("total_event", references: [event_id])
+  payment       Int
+  createdAt     DateTime  @default(now())
+  passwordEntry Password  @relation("user_password", fields: [password])
+  issues        Issue[]   @relation("user_issue", fields: [userId])
 }
 
-model Events{
-    event_id String @relation("total_event",)
-    name String @unique
-    participants String[] @relation("id")
+model Event {
+  event_id      String  @id @default(auto())
+  name          String  @unique
+  participants  User[]  @relation("participants", references: [id])
+  total_event   User[]  @relation("total_event", references: [id])
 }
 
-model accomodation{
-    user_id String[] @relation("id")
-    location String 
+model Accomodation {
+  id       Int     @id @default(autoincrement())
+  user_id  User[]  @relation("accomodation", references: [id])
+  location String
 }
 
-model password{
-        id String @default(autoincrement())
-        user_id String[] @relation("id")
-        oldpassword String @relation("user.fields: ["password"]")
-        newpassword String @relation("user.fields: ["password"]",onUpdate: ["oldpassword"])
-        updatedAt DateTime @default(now())
+model Password {
+  id           Int       @id @default(autoincrement())
+  user_id      User[]    @relation("user_password", references: [id])
+  oldpassword  String
+  newpassword  String
+  updatedAt    DateTime  @default(now())
 }
 
-model issue {
-    userId String @relation("id")
-    issue String
-    updatedAt DateTime @default(now())
-    resolved Boolean
+model Issue {
+  id         Int       @id @default(autoincrement())
+  userId     User[]    @relation("user_issue", references: [id])
+  issue      String
+  createdAt  DateTime  @default(now())
+  resolved   Boolean
 }
