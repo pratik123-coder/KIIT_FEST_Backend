@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+    id Int @id @default(autoincrement()) @relation(Events)
+    name String 
+    email String @unique
+    password String
+    phoneNumber Int 
+    DateOfBirth DateTime
+    city String
+    state String
+    gender String
+    college String
+    events String?
+    total_events String?
+    accomodation Boolean
+    payment Boolean
+    createdAt DateTime @default(now())
+}
+
+model Events{
+    event_id String @relation("total_event",)
+    name String @unique
+    participants String[] @relation("id")
+}
+
+model accomodation{
+    user_id String[] @relation("id")
+    location String 
+}
+
+model password{
+        id String @default(autoincrement())
+        user_id String[] @relation("id")
+        oldpassword String @relation("user.fields: ["password"]")
+        newpassword String @relation("user.fields: ["password"]",onUpdate: ["oldpassword"])
+        updatedAt DateTime @default(now())
+}
+
+model issue {
+    userId String @relation("id")
+    issue String
+    updatedAt DateTime @default(now())
+    resolved Boolean
+}
