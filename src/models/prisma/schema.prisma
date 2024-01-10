@@ -8,41 +8,44 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  name          String
-  email         String    @unique
-  password      String
-  phoneNumber   String
-  DateOfBirth   DateTime
-  city          String
-  state         String
-  gender        String
-  college       String
-  events        Event[]   @relation("participants")
-  accomodation  Boolean
-  total_events  Event[]   @relation("total_event", references: [event_id])
-  payment       Int
-  createdAt     DateTime  @default(now())
-  passwordEntry Password  @relation("user_password", fields: [password])
-  issues        Issue[]   @relation("user_issue", fields: [userId])
+  id             String    @id @default(auto())
+  name           String
+  email          String    @unique
+  password       String
+  phoneNumber    String
+  DateOfBirth    DateTime
+  city           String
+  state          String
+  gender         String
+  college        String
+  events         Event[]   @relation("participants", references: [event_id])
+  accomodation   Boolean
+  total_events   Event[]   @relation("total_event", references: [event_id])
+  payment        Int
+  qr_code        String    @unique
+  amount_paid    Boolean
+  createdAt      DateTime  @default(now())
+  issues         Issue[]   @relation("user_issue", fields: [userId])
 }
 
 model Event {
-  event_id      String  @id @default(auto())
-  name          String  @unique
-  participants  User[]  @relation("participants", references: [id])
-  total_event   User[]  @relation("total_event", references: [id])
+  event_id          String  @id
+  name              String  @unique
+  participants      User[]  @relation("participants")
+  total_event       User[]  @relation("total_event")
+  qr_participants  User[]  @relation("qr_participants")
 }
 
 model Accomodation {
-  id       Int     @id @default(autoincrement())
-  user_id  User[]  @relation("accomodation", references: [id])
-  location String
+  id             Int      @id @default(autoincrement())
+  user_id        User[]   @relation("accomodation")
+  location       String
+  price          Int
 }
 
 model Password {
   id           Int       @id @default(autoincrement())
-  user_id      User[]    @relation("user_password", references: [id])
+  user_id      User[]    @relation("user_password")
   oldpassword  String
   newpassword  String
   updatedAt    DateTime  @default(now())
@@ -50,8 +53,19 @@ model Password {
 
 model Issue {
   id         Int       @id @default(autoincrement())
-  userId     User[]    @relation("user_issue", references: [id])
+  userId     User[]    @relation("user_issue")
   issue      String
   createdAt  DateTime  @default(now())
   resolved   Boolean
+}
+
+model Cart {
+  cart_id            String        @id @unique
+  user_id            User[]        @relation("cart_user")
+  user_name          String
+  events             Event[]       @relation("cart_events")
+  merchandise        Boolean
+  accomodation_price Int
+  final_Amount       Int
+  accomodation       Accomodation[] @relation("cart_accomodation")
 }
